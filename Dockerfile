@@ -23,11 +23,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Port HTTP API
-EXPOSE 8000
+EXPOSE 8080
 
 # --- Domyślne (nadpisz w runtime / docker-compose / Railway) ---
 # Sekrety NIE wklejaj do obrazu — podawaj przy starcie kontenera.
-ENV PORT=8000 \
+ENV PORT=8080 \
     CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000 \
     RAG_TOP_K=6 \
     GEMINI_MODEL=gemini-3-flash-preview \
@@ -45,6 +45,6 @@ ENV PORT=8000 \
 #   NEXT_PUBLIC_API_URL  — ustawiane po stronie frontu, nie w tym kontenerze
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/')" || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/')" || exit 1
 
 CMD ["sh", "-c", "exec uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
