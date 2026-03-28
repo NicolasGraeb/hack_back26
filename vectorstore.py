@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from config import get_settings
 from langchain_chroma import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -15,9 +16,7 @@ DEFAULT_EMBEDDING_MODEL = "gemini-embedding-001"
 
 
 def get_embeddings() -> GoogleGenerativeAIEmbeddings:
-    api_key = os.getenv("GEMINI_API_KEY", "AIzaSyBSaj4aD9osrkeGcDayug_3yWkq-BcZc_4").strip()
-    if not api_key:
-        raise ValueError("Brak GEMINI_API_KEY")
+    api_key = get_settings().gemini_api_key
     model = os.getenv("GEMINI_EMBEDDING_MODEL", DEFAULT_EMBEDDING_MODEL).strip()
     return GoogleGenerativeAIEmbeddings(
         model=model,

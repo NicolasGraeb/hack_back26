@@ -44,7 +44,7 @@ class Settings:
 
 @lru_cache
 def get_settings() -> Settings:
-    key = os.getenv("GEMINI_API_KEY", "AIzaSyBSaj4aD9osrkeGcDayug_3yWkq-BcZc_4").strip()
+    key = os.getenv("GEMINI_API_KEY", "").strip()
     if not key:
         raise ValueError("Ustaw GEMINI_API_KEY.")
     raw = os.getenv(
