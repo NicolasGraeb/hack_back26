@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DEFAULT_DATABASE_URL = (
-    "postgresql+psycopg2://admin:admin@127.0.0.1:9191/postgres"
+ 'postgresql://postgres:WsgGuekAxUMWldOIEFotcjfadNZjfzeo@postgres.railway.internal:5432/railway'
+    #"postgresql+psycopg2://admin:admin@127.0.0.1:9191/postgres"
 )
 
 
@@ -32,7 +33,7 @@ def get_settings() -> Settings:
         raise ValueError("Ustaw GEMINI_API_KEY.")
     raw = os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:3000,http://localhost:3002,http://localhost:5173",
+        "http://localhost:3000,http://localhost:3002,http://localhost:5173,frontend-hack26.vercel.app",
     )
     origins = tuple(x.strip() for x in raw.split(",") if x.strip())
     return Settings(
