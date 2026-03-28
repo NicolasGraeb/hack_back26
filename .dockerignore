@@ -1,0 +1,16 @@
+.git
+.gitignore
+.venv
+venv
+__pycache__
+*.py[cod]
+*.egg-info
+.pytest_cache
+.mypy_cache
+FRONTEND/frontend/node_modules
+FRONTEND/frontend/.next
+*.md
+.env
+.env.*
+!.env.example
+data/chroma_db

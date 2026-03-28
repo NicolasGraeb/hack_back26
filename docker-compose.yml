@@ -1,0 +1,33 @@
+# Przykład: skopiuj do .env wartości (GEMINI_API_KEY, DATABASE_URL, …)
+#   docker compose up --build
+
+services:
+  api:
+    build: .
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      PORT: "8000"
+      # --- wymagane ---
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?Ustaw GEMINI_API_KEY w .env}
+      DATABASE_URL: ${DATABASE_URL:?Ustaw DATABASE_URL w .env}
+      # --- CORS: dodaj URL frontu (Next) ---
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.0-flash}
+      GEMINI_EMBEDDING_MODEL: ${GEMINI_EMBEDDING_MODEL:-gemini-embedding-001}
+      RAG_TOP_K: ${RAG_TOP_K:-6}
+      SQLALCHEMY_CREATE_ALL: ${SQLALCHEMY_CREATE_ALL:-false}
+      # Bucket (logo) — opcjonalnie
+      ENDPOINT: ${ENDPOINT:-}
+      BUCKET: ${BUCKET:-}
+      ACCESS_KEY_ID: ${ACCESS_KEY_ID:-}
+      SECRET_ACCESS_KEY: ${SECRET_ACCESS_KEY:-}
+      REGION: ${REGION:-auto}
+      BUCKET_PRESIGN_EXPIRES: ${BUCKET_PRESIGN_EXPIRES:-604800}
+    volumes:
+      # Persystencja Chroma (RAG); bez tego indeks odtwarza się przy każdym restarcie
+      - chroma_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  chroma_data:
