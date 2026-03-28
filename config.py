@@ -1,10 +1,26 @@
 import os
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+def _normalize_cors_origin(raw: str) -> str:
+    """Origin z nagłówka nigdy nie ma końcowego `/`; wpisy w env często mają — muszą się zgadzać."""
+    o = raw.strip()
+    if not o:
+        return o
+    while o.endswith("/") and "://" in o and not o.endswith("://"):
+        o = o[:-1]
+    if "://" in o:
+        return o
+    host = o.split("/")[0]
+    if re.match(r"^(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?$", host, re.I):
+        return f"http://{o}"
+    return f"https://{o}"
 
 DEFAULT_DATABASE_URL = (
  'postgresql://postgres:WsgGuekAxUMWldOIEFotcjfadNZjfzeo@postgres.railway.internal:5432/railway'
@@ -33,9 +49,13 @@ def get_settings() -> Settings:
         raise ValueError("Ustaw GEMINI_API_KEY.")
     raw = os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:3000,http://localhost:3002,http://localhost:5173,frontend-hack26.vercel.app",
+        "http://localhost:3000,http://localhost:3002,http://localhost:5173,https://frontend-hack26.vercel.app",
     )
-    origins = tuple(x.strip() for x in raw.split(",") if x.strip())
+    origins = tuple(
+        _normalize_cors_origin(x)
+        for x in raw.split(",")
+        if x.strip()
+    )
     return Settings(
         gemini_api_key=key,
         gemini_model=os.getenv("GEMINI_MODEL", "gemini-3-flash-preview").strip(),
